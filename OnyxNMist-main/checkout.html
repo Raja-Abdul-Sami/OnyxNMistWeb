@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnyxNMist - Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #111, #222);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(3, 3, 3, 0.9), rgba(255, 60, 120, 0.8));
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff3c78;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: #ff3c78;
+            transition: left 0.3s ease;
+        }
+
+        .logo:hover::after {
+            left: 0;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .profile-icon {
+    font-size: 24px; /* Adjust size as needed */
+    color: white; /* Icon color */
+}
+
+.profile-icon:hover {
+    color: #ff3c78; /* Change color on hover */
+}
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff3c78;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .checkout-container {
+            padding: 100px 20px 40px;
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .cart-item {
+            background: linear-gradient(135deg, #333, #444);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .cart-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #ff3c78;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .total {
+            font-size: 28px;
+            margin: 40px 0;
+            color: #ff3c78;
+            text-align: right;
+        }
+
+        .empty-cart {
+            text-align: center;
+            font-size: 20px;
+            color: #ff3c78;
+            margin-top: 40px;
+        }
+
+        .checkout-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 60, 120, 0.1);
+            border: 2px solid #ff3c78;
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            background: rgba(255, 60, 120, 0.2);
+            box-shadow: 0 0 15px rgba(255, 60, 120, 0.3);
+            outline: none;
+        }
+
+        .payment-options {
+            margin-top: 40px;
+        }
+
+        .payment-card {
+            background: linear-gradient(135deg, #333, #444);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff3c78;
+        }
+
+        .payment-card.selected {
+            border-color: #ff3c78;
+            background: rgba(255, 60, 120, 0.1);
+        }
+
+        .payment-info {
+            background: linear-gradient(135deg, #333, #444);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .payment-info.show {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        .credit-card-form {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .card-element {
+            background: rgba(255, 60, 120, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ff3c78;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #ff3c78, #ff1e5a);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 60, 120, 0.5);
+        }
+
+        .back-to-cart {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff3c78;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .back-to-cart:hover {
+            background: #ff1c58;
+        }
+
+        footer {
+            background: linear-gradient(135deg, rgba(3, 3, 3, 0.9), rgba(255, 60, 120, 0.8));
+            padding: 20px;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .credit-card-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">OnyxNMist</div>
+        <nav aria-label="Main Navigation">
+            <a href="home.html" aria-label="Home">Home</a>
+            <a href="shop.html" aria-label="Shop">Shop</a>
+            <a href="about.html" aria-label="About">About</a>
+            <a href="contact.html" aria-label="Contact">Contact</a>
+            <a href="cart.html" aria-label="Cart">Cart</a>
+            <a href="profile.html" class="profile-icon"><i class="fas fa-user-circle"></i></a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="checkout-container">
+            <h2>Checkout</h2>
+            <div id="cart-items"></div>
+            <div class="total" id="total-price">Total: $0.00</div>
+
+            <form id="checkout-form" class="checkout-form">
+                <div>
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <input type="text" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="City" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="State" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" placeholder="Zip Code" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                </div>
+
+                <div class="payment-options">
+                    <h3>Payment Method</h3>
+                    <div class="payment-card" onclick="selectPayment('cod')">
+                        <input type="radio" name="payment" id="cod" hidden>
+                        <label for="cod">Cash on Delivery</label>
+                    </div>
+                    <div class="payment-card" onclick="selectPayment('card')">
+                        <input type="radio" name="payment" id="card" hidden>
+                        <label for="card">Credit/Debit Card</label>
+                    </div>
+
+                    <div class="payment-info" id="card-payment">
+                        <div class="credit-card-form">
+                            <div class="form-group">
+                                <input type="text" placeholder="Card Number" pattern="[0-9]{16}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="MM/YY" pattern="(0[1-9]|1[0-2])\/[0-9]{2}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="CVC" pattern="[0-9]{3}" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" placeholder="Cardholder Name" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Complete Purchase</button>
+                <a href="cart.html" class="back-to-cart">Back to Cart</a>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2025 OnyxNMist. All Rights Reserved.
+    </footer>
+
+    <script>
+        // Update checkout items dynamically
+        function updateCheckout() {
+            const cartItemsContainer = document.getElementById("cart-items");
+            const totalPriceElement = document.getElementById("total-price");
+            const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (!cartItems.length) {
+                cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                totalPriceElement.style.display = 'none';
+                return;
+            }
+
+            let total = 0;
+            cartItemsContainer.innerHTML = "";
+
+            cartItems.forEach((item) => {
+                total += item.price * item.quantity;
+
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "cart-item";
+                itemDiv.innerHTML = `
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <p>$${item.price.toFixed(2)} × ${item.quantity}</p>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart('${item.name}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+
+                cartItemsContainer.appendChild(itemDiv);
+            });
+
+            totalPriceElement.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        // Remove item from cart
+        function removeFromCart(itemName) {
+            let cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+            cartItems = cartItems.filter(item => item.name !== itemName);
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            updateCheckout();
+        }
+
+        // Payment method selection
+        function selectPayment(method) {
+            const cardPayment = document.getElementById('card-payment');
+            if (method === 'card') {
+                cardPayment.classList.add('show');
+            } else {
+                cardPayment.classList.remove('show');
+            }
+        }
+
+        // Form validation and submission
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateForm()) {
+                alert('Thank you for your purchase!');
+                localStorage.removeItem('cart');
+                updateCheckout();
+                window.location.href = 'confirmation.html';
+            }
+        });
+
+        function validateForm() {
+            const inputs = document.querySelectorAll('.checkout-form input');
+            for (let input of inputs) {
+                if (!input.checkValidity()) {
+                    alert(`Please fill out the field: ${input.placeholder}`);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Initialize checkout when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCheckout();
+        });
+    </script>
+</body>
+</html>

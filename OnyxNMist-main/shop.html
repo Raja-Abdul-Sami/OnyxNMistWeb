@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnyxNMist - Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #111, #222);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(3, 3, 3, 0.9), rgba(255, 60, 120, 0.8));
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff3c78;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: #ff3c78;
+            transition: left 0.3s ease;
+        }
+
+        .logo:hover::after {
+            left: 0;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff3c78;
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        #cart-icon {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        #cart-count {
+            background: #ff1e5a;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 50%;
+            font-size: 12px;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+
+        .section {
+            padding: 100px 20px 40px;
+            flex: 1;
+        }
+
+        .filter-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-options label {
+            color: white;
+            margin: auto 0;
+        }
+
+        .filter-options select, .filter-options input {
+            color: white;
+            background: rgba(255, 60, 120, 0.1);
+            border: 2px solid #ff3c78;
+            border-radius: 5px;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .filter-options select:hover, .filter-options input:hover {
+            background: rgba(255, 60, 120, 0.3);
+            border-color: #ff1e5a;
+            transform: scale(1.05);
+        }
+
+        .search-bar {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar input {
+            width: 400px;
+            max-width: 90%;
+            padding: 12px 20px;
+            border: 2px solid #ff3c78;
+            border-radius: 25px;
+            background: rgba(255, 60, 120, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            background: rgba(255, 60, 120, 0.3);
+            border-color: #ff1e5a;
+            box-shadow: 0 0 15px rgba(255, 60, 120, 0.3);
+        }
+
+        .perfume-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .perfume {
+            background: linear-gradient(135deg, #333, #444);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .perfume:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 25px rgba(255, 60, 120, 0.5);
+        }
+
+        .perfume img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #ff3c78;
+        }
+
+        .perfume h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #ff3c78;
+        }
+
+        .quick-details {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-badge {
+            background: rgba(255, 60, 120, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .quick-add-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .perfume:hover .quick-add-btn {
+            opacity: 1;
+            bottom: 30px;
+        }
+
+        footer {
+            background: linear-gradient(135deg, rgba(3, 3, 3, 0.9), rgba(255, 60, 120, 0.8));
+            padding: 20px;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #333, #444);
+            max-width: 800px;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #ff3c78;
+            position: relative;
+            animation: modalSlide 0.5s ease-out;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close {
+            color: #ff3c78;
+            font-size: 28px;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #ff1e5a;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #ff3c78;
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255, 60, 120, 0.1);
+            border-radius: 10px;
+        }
+
+        .detail-item i {
+            color: #ff3c78;
+            width: 25px;
+            text-align: center;
+        }
+
+        .rating {
+            display: flex;
+            gap: 5px;
+            color: #ffd700;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ingredient-tag {
+            background: rgba(255, 60, 120, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .cart-btn, .wishlist-btn {
+            background: linear-gradient(135deg, #ff3c78, #ff1e5a);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cart-btn:hover, .wishlist-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 60, 120, 0.3);
+        }
+
+        .cart-btn:active, .wishlist-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                margin: 10% auto;
+            }
+            
+            .modal-image {
+                height: 300px;
+            }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .pagination button {
+            background: linear-gradient(135deg, #ff3c78, #ff1e5a);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 60, 120, 0.3);
+        }
+
+        .pagination button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .quick-add-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2;
+            width: 80%;
+        }
+
+        .perfume:hover .quick-add-btn {
+            opacity: 1;
+            bottom: 30px;
+        }
+
+        .perfume-content {
+            position: relative;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">OnyxNMist</div>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="shop.html">Shop</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="cart.html" id="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </a>
+        </nav>
+    </header>
+
+    <section class="section">
+        <h2>Shop Our Perfumes</h2>
+        <div class="filter-options">
+            <label for="category">Category:</label>
+            <select id="category" onchange="filterPerfumes()">
+                <option value="all">All</option>
+                <option value="floral">Floral</option>
+                <option value="woody">Woody</option>
+                <option value="fresh">Fresh</option>
+            </select>
+            
+            <label for="min-price">Min Price:</label>
+            <input type="number" id="min-price" placeholder="0" onchange="filterPerfumes()">
+            
+            <label for="max-price">Max Price:</label>
+            <input type="number" id="max-price" placeholder="100" onchange="filterPerfumes()">
+            
+            <label for="sort">Sort By:</label>
+            <select id="sort" onchange="sortPerfumes()">
+                <option value="name">Name</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search for perfumes..." oninput="searchPerfumes()">
+        </div>
+
+        <div class="perfume-container" id="perfume-container">
+            <!-- Perfume items will be dynamically generated here -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <button id="prev-page" onclick="changePage(-1)">Previous</button>
+            <span id="page-info">Page 1</span>
+            <button id="next-page" onclick="changePage(1)">Next</button>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2025 OnyxNMist. All Rights Reserved.
+    </footer>
+
+    <!-- Modal for Product Details -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-image-container">
+                <img class="modal-image" src="" alt="">
+            </div>
+            <div class="product-details">
+                <h3 id="modal-title"></h3>
+                <p id="modal-description"></p>
+                
+                <div class="detail-item">
+                    <i class="fas fa-tag"></i>
+                    <span id="modal-price"></span>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fas fa-star"></i>
+                    <div class="rating" id="modal-rating"></div>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fas fa-weight-hanging"></i>
+                    <span id="modal-size"></span>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fas fa-industry"></i>
+                    <span id="modal-brand"></span>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fas fa-list"></i>
+                    <div class="ingredients-list" id="modal-ingredients"></div>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fas fa-cube"></i>
+                    <span id="modal-availability"></span>
+                </div>
+
+                <div class="button-group">
+                    <button class="cart-btn" id="modal-cart-btn" onclick="addToCartFromModal()">Add to Cart</button>
+                    <button class="wishlist-btn" id="modal-wishlist-btn">Add to Wishlist</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const perfumes = [
+            {
+                name: "Midnight Elegance",
+                price: 50.00,
+                image: "assets/images/black.png",
+                description: "A deep, mysterious scent with notes of musk and vanilla.",
+                category: "woody",
+                brand: "Onyx Collection",
+                size: "100ml Eau de Parfum",
+                rating: 4.5,
+                ingredients: ["Bergamot", "Black Orchid", "Sandalwood", "Vanilla"],
+                availability: "In Stock (25+ units)"
+            },
+            {
+                name: "Ocean Breeze",
+                price: 40.00,
+                image: "assets/images/blue.png",
+                description: "A refreshing, cool scent inspired by the sea.",
+                category: "fresh",
+                brand: "Aqua Series",
+                size: "80ml Eau de Toilette",
+                rating: 4.2,
+                ingredients: ["Sea Salt", "Lemon Zest", "Driftwood", "Ambergris"],
+                availability: "In Stock (15+ units)"
+            },
+            {
+                name: "Velvet Rose",
+                price: 45.00,
+                image: "assets/images/red.png",
+                description: "A floral blend with soft, romantic rose undertones.",
+                category: "floral",
+                brand: "Luxury Blossoms",
+                size: "100ml Eau de Parfum",
+                rating: 4.8,
+                ingredients: ["Damask Rose", "Peony", "White Musk", "Vanilla"],
+                availability: "Low Stock (5 units)"
+            },
+            {
+                name: "Citrus Burst",
+                price: 35.00,
+                image: "assets/images/green.png",
+                description: "A zesty fragrance with notes of lemon and orange.",
+                category: "fresh",
+                brand: "Citrus Line",
+                size: "50ml Eau de Cologne",
+                rating: 4.0,
+                ingredients: ["Lemon", "Orange Blossom", "Ginger", "Vetiver"],
+                availability: "In Stock (30+ units)"
+            },
+            {
+                name: "Woodland Whisper",
+                price: 55.00,
+                image: "assets/images/brown.png",
+                description: "A warm scent with hints of cedar and sandalwood.",
+                category: "woody",
+                brand: "Forest Essence",
+                size: "100ml Eau de Parfum",
+                rating: 4.6,
+                ingredients: ["Cedarwood", "Sandalwood", "Patchouli", "Amber"],
+                availability: "In Stock (20+ units)"
+            },
+            {
+                name: "Floral Fantasy",
+                price: 60.00,
+                image: "assets/images/floral.png",
+                description: "A vibrant blend of jasmine and gardenia.",
+                category: "floral",
+                brand: "Bloom Collection",
+                size: "120ml Eau de Parfum",
+                rating: 4.7,
+                ingredients: ["Jasmine", "Gardenia", "Ylang-Ylang", "White Musk"],
+                availability: "Pre-Order"
+            }
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 6;
+        let filteredPerfumes = [...perfumes];        let cartCount = localStorage.getItem('cartCount') || 0;
+
+// Initialize cart count display
+document.getElementById('cart-count').textContent = cartCount;
+
+function displayPerfumes() {
+    const container = document.getElementById('perfume-container');
+    container.innerHTML = filteredPerfumes
+        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+        .map(perfume => `
+            <div class="perfume">
+                <div class="perfume-content" onclick="showModal(${JSON.stringify(perfume).replace(/"/g, '&quot;')})">
+                    <img src="${perfume.image}" alt="${perfume.name}">
+                    <h3>${perfume.name}</h3>
+                    <div class="quick-details">
+                        <span class="detail-badge">${perfume.category}</span>
+                        <span class="detail-badge">${perfume.size}</span>
+                    </div>
+                    <div class="price">$${perfume.price.toFixed(2)}</div>
+                </div>
+                <button class="cart-btn quick-add-btn" 
+                        onclick="event.stopPropagation(); addToCart('${perfume.name}', ${perfume.price}, '${perfume.image}')">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        `).join('');
+
+    updatePagination();
+}
+
+function addToCart(name, price, image) {
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItem = cart.find(item => item.name === name);
+    
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({ name, price, image, quantity: 1 });
+    }
+    
+    localStorage.setItem('cart', JSON.stringify(cart));
+    cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById('cart-count').textContent = cartCount;
+    localStorage.setItem('cartCount', cartCount);
+}
+
+function filterPerfumes() {
+    const category = document.getElementById('category').value;
+    const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
+
+    filteredPerfumes = perfumes.filter(perfume => {
+        const matchesCategory = category === 'all' || perfume.category === category;
+        const matchesPrice = perfume.price >= minPrice && perfume.price <= maxPrice;
+        return matchesCategory && matchesPrice;
+    });
+
+    currentPage = 1; // Reset to first page
+    displayPerfumes();
+}
+
+function sortPerfumes() {
+    const sortBy = document.getElementById('sort').value;
+    filteredPerfumes.sort((a, b) => {
+        if (sortBy === 'name') {
+            return a.name.localeCompare(b.name);
+        } else if (sortBy === 'price') {
+            return a.price - b.price;
+        }
+    });
+    displayPerfumes();
+}
+
+function searchPerfumes() {
+    const searchTerm = document.getElementById('search').value.toLowerCase();
+    filteredPerfumes = perfumes.filter(perfume => perfume.name.toLowerCase().includes(searchTerm));
+    currentPage = 1; // Reset to first page
+    displayPerfumes();
+}
+
+function changePage(direction) {
+    const totalPages = Math.ceil(filteredPerfumes.length / itemsPerPage);
+    currentPage += direction;
+
+    if (currentPage < 1) currentPage = 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    displayPerfumes();
+    document.getElementById('page-info').textContent = `Page ${currentPage}`;
+}
+
+function showModal(perfume) {
+    document.getElementById('modal-title').textContent = perfume.name;
+    document.getElementById('modal-description').textContent = perfume.description;
+    document.getElementById('modal-price').textContent = `$${perfume.price.toFixed(2)}`;
+    document.getElementById('modal-size').textContent = perfume.size;
+    document.getElementById('modal-brand').textContent = perfume.brand;
+    document.getElementById('modal-availability').textContent = perfume.availability;
+
+    const modalIngredients = document.getElementById('modal-ingredients');
+    modalIngredients.innerHTML = perfume.ingredients.map(ingredient => `<span class="ingredient-tag">${ingredient}</span>`).join('');
+
+    const modalRating = document.getElementById('modal-rating');
+        modalRating.innerHTML = '';
+        for (let i = 0; i < Math.floor(perfume.rating); i++) {
+            modalRating.innerHTML += '<i class="fas fa-star"></i>';
+        }
+        if (perfume.rating % 1 !== 0) {
+            modalRating.innerHTML += '<i class="fas fa-star-half-alt"></i>';
+        }
+
+        const modalImage = document.querySelector('.modal-image');
+        modalImage.src = perfume.image;
+
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'none';
+    }
+
+    function addToCartFromModal() {
+        const modalTitle = document.getElementById('modal-title').textContent;
+        const modalPrice = parseFloat(document.getElementById('modal-price').textContent.replace('$', ''));
+        const modalImage = document.querySelector('.modal-image').src;
+
+        addToCart(modalTitle, modalPrice, modalImage);
+        closeModal();
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(filteredPerfumes.length / itemsPerPage);
+        const prevButton = document.getElementById('prev-page');
+        const nextButton = document.getElementById('next-page');
+
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === totalPages;
+
+        document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+        displayPerfumes();
+        document.getElementById('cart-count').textContent = cartCount;
+    });
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === document.getElementById('myModal')) {
+            closeModal();
+        }
+    };
+</script>
+</body>
+</html>

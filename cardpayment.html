@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <title>Frontend Mentor | Interactive card details form</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap');
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: #111;
+            color: white;
+        }
+
+        .container {
+            max-height: 100vh;
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card {
+            flex-shrink: 1;
+            max-height: 100vh;
+            position: relative;
+            width: min-content;
+        }
+
+        .card img {
+            object-fit: contain;
+        }
+
+        .card .desktop {
+            width: auto;
+            height: 100vh;
+        }
+
+        .card .mobile {
+            display: none;
+        }
+
+        .cards {
+            position: absolute;
+            left: 45%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .front_card, .back_card {
+            width: 320px;
+        }
+
+        .front, .back {
+            position: relative;
+            width: 320px;
+        }
+
+        .back {
+            margin-left: 25%;
+            margin-top: 30px;
+        }
+
+        .front_card_data, .back_card_data {
+            position: absolute;
+            padding: 20px;
+            width: 320px;
+            color: white;
+        }
+
+        .front_card_data {
+            top: 0;
+        }
+
+        #card_num {
+            margin-top: 25px;
+            font-size: 1.4rem;
+            width: 100%;
+        }
+
+        .details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .back_card_data {
+            right: 20px;
+            top: 55px;
+            text-align: right;
+        }
+
+        .card_form {
+            flex-grow: 2;
+            max-height: 100vh;
+        }
+
+        .form_group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 320px;
+            margin: auto;
+        }
+
+        .c_data {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .c_exp {
+            width: 50%;
+        }
+
+        .c_flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .c_flex input {
+            margin-right: 10px;
+        }
+
+        .c_csv {
+            width: 50%;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px;
+            font-size: 1rem;
+            outline: none;
+            border: 1px solid hsl(270, 3%, 87%);
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, input:active {
+            border: 1px solid transparent;
+            border-image: linear-gradient(to left, #ff3c78, #ff1e5a);
+            border-image-slice: 1;
+            box-shadow: 0 0 5px rgba(255, 60, 120, 0.5);
+        }
+
+        label {
+            align-self: flex-start;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 5px;
+            transition: color 0.3s;
+        }
+
+        input::placeholder {
+            color: hsl(279, 6%, 55%);
+            transition: color 0.3s;
+        }
+
+        input:focus::placeholder {
+            color: transparent;
+        }
+
+        .err {
+            align-self: flex-start;
+            padding: 0 0 5px;
+            font-size: 0.8rem;
+            color: hsl(0, 100%, 66%);
+            visibility: hidden;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px 15px;
+            background: #ff3c78; /* Updated button background */
+            border: none;
+            border-radius: 5px;
+            color: white; /* Changed to white */
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s; /* Added transition for button */
+        }
+
+        .btn:hover {
+            background: #ff1e5a; /* Darker shade on hover */
+            transform: scale(1.05); /* Scale effect on hover */
+        }
+
+        .contain {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 320px;
+            background: #222; /* Updated background */
+            margin: auto;
+            border-radius: 10px; /* Added border radius for aesthetics */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Added shadow */
+        }
+
+        .contain p {
+            color: hsl(279, 6%, 55%);
+            padding: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        @media screen and (max-width: 1150px) {
+            .cards {
+                position: absolute;
+                left: 40%;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+
+        @media screen and (max-width: 1030px) {
+            .container {
+                flex-direction: column;
+                overflow: visible;
+                overflow-x: hidden;
+            }
+
+            .card {
+                flex-shrink: 0;
+            }
+
+            .card img {
+                width: 250px;
+            }
+
+            .card .desktop {
+                display: none;
+            }
+
+            .card .mobile {
+                display: block;
+                width: 100vw;
+            }
+
+            .cards {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .front_card, .back_card {
+                width: 250px;
+            }
+
+            .front, .back {
+                width: 250px;
+            }
+
+            .back {
+                margin-left: 18%;
+                margin-top: -225px;
+            }
+
+            .front {
+                z-index: 1;
+                margin-top: 330px;
+                margin-left: 20px;
+            }
+
+            .front_card_data, .back_card_data {
+                padding: 10px;
+                width: 250px;
+            }
+
+            .front_card_data img {
+                width: auto;
+            }
+
+            #card_num {
+                margin-top: 10px;
+                font-size: 1.2rem;
+            }
+
+            .details {
+                margin-top: 10px;
+                font-size: 0.8rem;
+            }
+
+            .back_card_data {
+                top: 46px;
+            }
+
+            .card_form {
+                padding-top: 15vh;
+                padding-bottom: 20px;
+            }
+
+            .form_group {
+                width: 300px;
+            }
+
+            .contain {
+                width: 300px;
+            }
+        }
+
+        @media screen and (max-width: 450px) {
+            .cards {
+                position: absolute;
+                left: 50%;
+                top: 10%;
+                transform: translate(-60%, -50%);
+            }
+
+            .front {
+                margin-top: 300px;
+            }
+
+            .back {
+                margin-top: -225px;
+            }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="container">
+        <div class="card">
+            <img src="images/bg-main-desktop.png" alt="bg" class="desktop">
+            <div class="cards">
+                <div class="front">
+                    <img src="images/bg-card-front.png" class="front_card" alt="front">
+                    <div class="front_card_data">
+                        <img src="images/card-logo.svg" alt="card_logo">
+                        <p id="card_num">1234 5678 9123 0000</p>
+                        <div class="details">
+                            <p id="name">mahid quershi</p>
+                            <p id="exp">00 / 00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="back">
+                    <img src="images/bg-card-back.png" class="back_card" alt="back">
+                    <div class="back_card_data">
+                        <p id="cvv">000</p>
+                    </div>
+                </div>
+            </div>
+            <img src="images/bg-main-mobile.png" alt="bg" class="mobile">
+        </div>
+        <div class="card_form">
+            <form>
+                <div class="form_group">
+                    <label for="c_name">Cardholder Name</label>
+                    <input type="text" id="c_name" placeholder="e.g. mahid quershi" size="25" maxlength="25">
+                    <p class="err" id="err_name">Can't be blank</p>
+                    <label for="c_num">Card Number</label>
+                    <input type="text" id="c_num" placeholder="e.g. 1234 5678 9123 0000" size="19" maxlength="19">
+                    <p class="err" id="err_num">Must be at least 16 numbers</p>
+                    <div class="c_data">
+                        <div class="c_exp">
+                            <label for="c_exp_month">Exp. Date (MM/YY)</label>
+                            <span class="c_flex">
+                                <input type="text" id="c_exp_month" placeholder="MM" size="2" maxlength="2">
+                                <input type="text" id="c_exp_year" placeholder="YY" size="2" maxlength="2">
+                            </span>
+                            <p class="err" id="err_exp">Can't be blank</p>
+                        </div>
+                        <div class="c_csv">
+                            <label for="c_cvv">CVV</label>
+                            <input type="text" id="c_cvv" placeholder="000" size="3" maxlength="3">
+                            <p class="err" id="err_cvv">Can't be blank</p>
+                        </div>
+                    </div>
+                    <button type="submit" id="c_submit" class="btn">Confirm</button>
+                </div>
+            </form>
+            <section class="contain" id="contain">
+                <img src="images/icon-complete.svg" alt="complete">
+                <p>We've added your card details</p>
+                <button type="button" id="continue" class="btn">Continue</button>
+            </section>
+        </div>
+    </div>
+</main>
+<script>
+    // Assigning variables
+    const button = document.getElementById('c_submit');
+    const name = document.getElementById('c_name');
+    const c_num = document.getElementById('c_num');
+    const f_card_num = document.getElementById('card_num');
+    const f_c_name = document.getElementById('name');
+    const b_c_cvv = document.getElementById('cvv');
+    const exp = document.getElementById('exp');
+    const exp_month = document.getElementById('c_exp_month');
+    const exp_year = document.getElementById('c_exp_year');
+    const cvv = document.getElementById('c_cvv');
+    const default_c_num = f_card_num.innerText;
+    const default_c_name = f_c_name.innerText;
+    const default_exp = exp.innerText;
+    const default_cvv = b_c_cvv.innerText;
+    const err_month = document.getElementById('err_exp');
+    const err_num = document.getElementById('err_num');
+    const err_name = document.getElementById('err_name');
+    const err_cvv = document.getElementById('err_cvv');
+    const thank_you = document.getElementById('contain');
+    const form = document.getElementsByTagName('form')[0];
+
+    // Disable default behavior
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        let name_data = name.value;
+        let num_data = c_num.value;
+        let month_data = exp_month.value;
+        let year_data = exp_year.value;
+        let cvv_data = cvv.value;
+
+        if (name_data === '' && num_data === '' && month_data === '' && year_data === '' && cvv_data === '') {
+            name.style.border = '1px solid hsl(0, 100%, 66%)';
+            c_num.style.border = '1px solid hsl(0, 100%, 66%)';
+            exp_month.style.border = '1px solid hsl(0, 100%, 66%)';
+            exp_year.style.border = '1px solid hsl(0, 100%, 66%)';
+            cvv.style.border = '1px solid hsl(0, 100%, 66%)';
+            err_name.style.visibility = 'visible';
+            err_month.style.visibility = 'visible';
+            err_num.style.visibility = 'visible';
+            err_cvv.style.visibility = 'visible';
+        } else if (name_data === '') {
+            name.style.border = '1px solid hsl(0, 100%, 66%)';
+            err_name.style.visibility = 'visible';
+        } else if (num_data === '') {
+            c_num.style.border = '1px solid hsl(0, 100%, 66%)';
+            err_num.style.visibility = 'visible';
+        } else if (month_data === '' || year_data === '') {
+            exp_month.style.border = '1px solid hsl(0, 100%, 66%)';
+            exp_year.style.border = '1px solid hsl(0, 100%, 66%)';
+            err_month.style.visibility = 'visible';
+        } else if (cvv_data === '' || cvv_data.length < 3) {
+            cvv.style.border = '1px solid hsl(0, 100%, 66%)';
+            err_cvv.style.visibility = 'visible';
+        } else if (name_data !== '' && (num_data !== '' && num_data.length === 19) && (month_data !== '' && month_data.length === 2) && (year_data !== '' && year_data.length === 2) && (cvv_data !== '' && cvv_data.length === 3)) {
+            f_c_name.innerText = name_data;
+            f_card_num.innerText = num_data;
+            exp.innerText = month_data + ' / ' + year_data;
+            b_c_cvv.innerText = cvv_data;
+            form.style.display = 'none';
+            thank_you.style.display = 'flex';
+        } else {
+            name.style.border = '1px solid #ccc';
+            c_num.style.border = '1px solid #ccc';
+            exp_month.style.border = '1px solid #ccc';
+            exp_year.style.border = '1px solid #ccc';
+            cvv.style.border = '1px solid #ccc';
+            err_name.style.visibility = 'hidden';
+            err_month.style.visibility = 'hidden';
+            err_num.style.visibility = 'hidden';
+            err_cvv.style.visibility = 'hidden';
+            thank_you.style.display = 'none';
+        }
+    });
+
+    // Only numbers function
+    function onlyNumberKey(e) {
+        let ASCIICode = (e.which) ? e.which : e.keyCode;
+        if (ASCIICode === 13 || ASCIICode === 9 || ASCIICode === 8 || (ASCIICode >= 48 && ASCIICode <= 57) || (ASCIICode >= 96 && ASCIICode <= 105))
+            return true;
+        return false;
+    }
+
+    c_num.onkeydown = onlyNumberKey;
+    exp_month.onkeydown = onlyNumberKey;
+    exp_year.onkeydown = onlyNumberKey;
+    cvv.onkeydown = onlyNumberKey;
+
+    // Change name on card
+    name.oninput = function () {
+        if (name.value.length > 0) {
+            f_c_name.innerText = name.value;
+            name.style.border = '1px solid #ccc';
+            err_name.style.visibility = 'hidden';
+        } else {
+            f_c_name.innerText = default_c_name;
+            name.style.border = '1px solid red';
+            err_name.style.visibility = 'visible';
+        }
+    }
+
+    // Adding num to card and formatting input val
+    c_num.oninput = function () {
+        let val = this.value.split(" ").join("");
+        if (val.length > 0) {
+            val = val.match(new RegExp('.{1,4}', 'g')).join(" ");
+        }
+        this.value = val;
+        f_card_num.innerText = val;
+        if (val.length < 19) {
+            err_num.style.visibility = 'visible';
+            c_num.style.border = '1px solid red';
+        } else {
+            err_num.style.visibility = 'hidden';
+            c_num.style.border = '1px solid #ccc';
+        }
+    }
+
+    // Adding month card
+    exp_month.oninput = function () {
+        if (exp_month.value > 0 && exp_month.value < 13) {
+            err_month.style.visibility = 'hidden';
+            exp.innerText = exp_month.value + ' / ' + exp_year.value;
+            exp_month.style.border = '1px solid #ccc';
+        } else {
+            err_month.style.visibility = 'visible';
+            exp_month.style.border = '1px solid red';
+        }
+    }
+
+    // Adding year
+    exp_year.oninput = function () {
+        let year = new Date().getFullYear() % 100; // Get last two digits of the current year
+        if (exp_year.value < year || exp_year.value > year + 5) {
+            err_month.innerText = 'Invalid Year';
+            err_month.style.visibility = 'visible';
+            exp_year.style.border = '1px solid red';
+        } else {
+            err_month.style.visibility = 'hidden';
+            exp_year.style.border = '1px solid #ccc';
+            exp.innerText = exp_month.value + ' / ' + exp_year.value;
+        }
+    }
+
+    // Adding CVV to card
+    cvv.oninput = function () {
+        if (cvv.value.length > 0 && cvv.value.length < 4) {
+            b_c_cvv.innerText = cvv.value;
+            cvv.style.border = '1px solid #ccc';
+            err_cvv.style.visibility = 'hidden';
+        } else {
+            b_c_cvv.innerText = default_cvv;
+            cvv.style.border = '1px solid red';
+            err_cvv.style.visibility = 'visible';
+        }
+    }
+
+    // Add event listener to the continue button
+document.getElementById('continue').addEventListener('click', function() {
+    // Redirect back to checkout.html
+    window.location.href = 'checkout.html';
+});
+
+function saveFormData() {
+            const formData = {
+                fullName: document.querySelector('input[placeholder="Full Name"]').value,
+                address: document.querySelector('input[placeholder="Address"]').value,
+                city: document.querySelector('input[placeholder="City"]').value,
+                state: document.querySelector('input[placeholder="State"]').value,
+                zipCode: document.querySelector('input[placeholder="Zip Code"]').value,
+                email: document.querySelector('input[placeholder="Email"]').value,
+            };
+            localStorage.setItem('checkoutFormData', JSON.stringify(formData));
+        }
+
+        // Add event listener to the continue button
+        document.getElementById('continue').addEventListener('click', function() {
+            saveFormData(); // Save form data before redirecting
+            window.location.href = 'checkout.html'; // Redirect back to checkout.html
+        });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnyxNMist - Sign In/Up</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #111, #222);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h2 {
+            position: absolute;
+            top: 20px;
+            font-size: 32px;
+            font-weight: 600;
+            color: #ff3c78;
+            text-shadow: 0px 0px 10px rgba(255, 60, 120, 0.5);
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+            width: 800px;
+            max-width: 100%;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transition: all 0.6s ease-in-out;
+        }
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+        .container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+        .container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+        }
+        form {
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ff3c78;
+        }
+        .social-container {
+            margin: 20px 0;
+        }
+        .social-container a {
+            border: 1px solid #ff3c78;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            height: 40px;
+            width: 40px;
+            color: #ff3c78;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .social-container a:hover {
+            background: #ff3c78;
+            color: white;
+            transform: translateY(-5px);
+        }
+        span {
+            font-size: 14px;
+            margin: 20px 0;
+            color: #aaa;
+        }
+        input {
+            background: #222;
+            border: none;
+            padding: 12px 15px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0px 0px 10px rgba(255, 60, 120, 0.5);
+            transform: scale(1.02);
+        }
+        button {
+            background: linear-gradient(135deg, #ff3c78, #ff1e5a);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 0px 15px rgba(255, 60, 120, 0.8);
+        }
+        a {
+            color: #ff3c78;
+            text-decoration: none;
+            font-size: 14px;
+            margin: 15px 0;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #ff1e5a;
+        }
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+        .container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+        .overlay {
+            background: linear-gradient(135deg, #ff3c78, #ff1e5a);
+            color: white;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+        .container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+        .overlay-panel {
+            position: absolute;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            height: 100%;
+            width: 50%;
+            text-align: center;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+        .container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+        .container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+        .ghost {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            transition: all 0.3s;
+        }
+        .ghost:hover {
+            background: white;
+            color: #ff3c78;
+        }
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        footer i {
+            color: #ff3c78;
+        }
+    </style>
+</head>
+<body>
+    <h2>Welcome to OnyxNMist</h2>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form action="home.html">
+                <h1>Create Account</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your email for registration</span>
+                <input type="text" placeholder="Name" required />
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Password" required />
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form action="home.html">
+                <h1>Sign in</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-google"></i></a>
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <span>or use your account</span>
+                <input type="email" placeholder="Email" required />
+                <input type="password" placeholder="Password" required />
+                <a href="#">Forgot your password?</a>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To stay connected, please login with your personal info</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start your journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>Created with <i class="fa fa-heart"></i> by OnyxNMist</p>
+    </footer>
+
+    <script>
+        // Toggle Sign In/Sign Up
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add('right-panel-active');
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove('right-panel-active');
+        });
+    </script>
+</body>
+</html>
